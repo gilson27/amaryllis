@@ -1,0 +1,15 @@
+﻿Build started 7/13/2017 2:03:13 PM.
+     1>Project "F:\Workfolders\Gilson\learning\softwares\yuv_player\amaryllis\dev\opengl_tests\windows\shader_uniform\shader_uniform\shader_uniform.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         E:\Softwares\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt shader_uniform.cpp
+         shader_uniform.cpp
+     1>f:\workfolders\gilson\learning\softwares\yuv_player\amaryllis\dev\opengl_tests\windows\shader_uniform\shader_uniform\shader_uniform.cpp(163): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+       Link:
+         E:\Softwares\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\Workfolders\Gilson\learning\softwares\yuv_player\amaryllis\dev\opengl_tests\windows\shader_uniform\Debug\shader_uniform.exe" /INCREMENTAL /NOLOGO opengl32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\Workfolders\Gilson\learning\softwares\yuv_player\amaryllis\dev\opengl_tests\windows\shader_uniform\Debug\shader_uniform.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\Workfolders\Gilson\learning\softwares\yuv_player\amaryllis\dev\opengl_tests\windows\shader_uniform\Debug\shader_uniform.lib" /MACHINE:X86 Debug\glad.obj
+         Debug\shader_uniform.obj
+         shader_uniform.vcxproj -> F:\Workfolders\Gilson\learning\softwares\yuv_player\amaryllis\dev\opengl_tests\windows\shader_uniform\Debug\shader_uniform.exe
+     1>Done Building Project "F:\Workfolders\Gilson\learning\softwares\yuv_player\amaryllis\dev\opengl_tests\windows\shader_uniform\shader_uniform\shader_uniform.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.13
