@@ -128,7 +128,7 @@ int WINAPI WinMain(
 		-0.5f, 0.5f, 0.0f   // top left 
 	};
 
-	unsigned int indices[] = {
+	float indices[] = {
 		0, 1, 3,
 		1, 2, 3
 	};
