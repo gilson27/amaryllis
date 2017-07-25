@@ -5,7 +5,7 @@
 	Supported formats
 */
 typedef enum videoFormat{ UYVY422, YUVp422, YUVp420, YV12 } VIDEO_FORMAT;
-typedef enum status{ FAILURE = -1, SUCCESS = 0} STATUS;
+typedef enum status{ FAILURE = -1, SUCCESS = 0, END_OF_FILE = 2} STATUS;
 
 /**
 	Structure to hold YUV video details
@@ -14,9 +14,17 @@ typedef struct YUV_Video {
 	int width;
 	int height;
 	VIDEO_FORMAT format;
+	/**
+		Array to store 
+	*/
 	short int* yArray;
 	short int* vArray;
 	short int* uArray;
+
+	/**
+		Combined array of Y, U and V for display purpose
+	*/
+	short int* frameArray;
 } YUVVideo;
 
 /**
@@ -24,13 +32,25 @@ typedef struct YUV_Video {
 */
 STATUS readBytes(char* filePath, char* buff, int frameSize, int frameNumber) {
 	FILE *fptr;
+	int readSize;
 	fptr = fopen(filePath, "r");
 	if (!fptr) {
-		printf("Error:: Unable to open the file %s.", filePath);
+		printf("Error:: Unable to open the file %s.\n", filePath);
 		return FAILURE;
 	}
 	fseek(fptr, frameSize*frameNumber, 0);
-	fread(buff, frameSize, 1, fptr);
+	readSize = fread(buff, frameSize, 1, fptr);
+	if (readSize == 0) {
+		printf("End of File..\n");
+		return END_OF_FILE;
+	}
+	else if (readSize < 0) {
+		printf("Error:: while reading file %s.\n", filePath);
+		return FAILURE;
+	}
+	else {
+		printf("Read Success..\n");
+	}
 	fclose(fptr);
 	return SUCCESS;
 }
@@ -61,6 +81,22 @@ STATUS convertToRGB(YUVVideo *yuvVideo) {
 }
 
 /**
+	Combine R, G and B to a single buffer
+*/
+STATUS combineRGB(YUVVideo *yuvVideo) {
+	int i;
+	int frameBufferCount = 0;
+
+	for (i = 0; i < yuvVideo->width * yuvVideo->height; ++i) {
+		yuvVideo->frameArray[frameBufferCount++] = yuvVideo->yArray[i];
+		yuvVideo->frameArray[frameBufferCount++] = yuvVideo->uArray[i];
+		yuvVideo->frameArray[frameBufferCount++] = yuvVideo->vArray[i];
+	}
+
+	return SUCCESS;
+}
+
+/**
 	Read UYVY video from file
 */
 STATUS readUYVY422(char* filePath, YUVVideo *yuvVideo, int frameNumber) {
@@ -87,6 +123,11 @@ STATUS readUYVY422(char* filePath, YUVVideo *yuvVideo, int frameNumber) {
 		Convert the video to RGB color space
 	*/
 	convertToRGB(yuvVideo);
+
+	/**
+		Combine RGB for Open GL display
+	*/
+	combineRGB(yuvVideo);
 	return SUCCESS;
 }
 
@@ -104,7 +145,7 @@ STATUS initYUV(int height, int width, VIDEO_FORMAT format, YUVVideo *yuvVideo) {
 /**
 	Read YUV of the given format
 */
-int readYUV(char* filePath, YUVVideo *yuvVideo, int frameNumber) {
+STATUS readYUV(char* filePath, YUVVideo *yuvVideo, int frameNumber) {
 	switch (yuvVideo->format)
 	{
 	case UYVY422: 
@@ -113,4 +154,5 @@ int readYUV(char* filePath, YUVVideo *yuvVideo, int frameNumber) {
 		printf("The format is not yet supported");
 		break;
 	}
+	return SUCCESS;
 }
