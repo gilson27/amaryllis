@@ -112,12 +112,12 @@ int WINAPI WinMain(
 	glEnableVertexAttribArray(2);
 
 	/**
-	Load and Create Texture
+	Load and Create Texture for video Frame
 	*/
-	unsigned int texture;
-	glGenTextures(1, &texture);
+	unsigned int videoFrame, overlayImage;
+	glGenTextures(1, &videoFrame);
 
-	glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+	glBindTexture(GL_TEXTURE_2D, videoFrame); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
 	/**
 	Set texture attributes or parameters
@@ -128,12 +128,26 @@ int WINAPI WinMain(
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+
+	/**
+	Load and create texture for overlayImage
+	*/
+	glGenTextures(1, &overlayImage);
+	glBindTexture(GL_TEXTURE_2D, overlayImage);
+
+	/**
+	Set texture attributes and parameters
+	*/
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	/**
 	Load image generate texture and mipmaps
 	*/
 	int width, height, nrChannels;
 	char *baseFileName = "frames/";
-	char fileName[100];
+	char *overlayFileName = "container.jpg";
+	char frameFileName[100];
 	int frameNum = 1;
 	int maxFrames = 300;
 	/**
@@ -151,8 +165,8 @@ int WINAPI WinMain(
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		sprintf_s(fileName, "%s%d.jpg", baseFileName, frameNum);
-		unsigned char* textureData = stbi_load(fileName, &width, &height, &nrChannels, 0);
+		sprintf_s(frameFileName, "%s%d.jpg", baseFileName, frameNum);
+		unsigned char* textureData = stbi_load(frameFileName, &width, &height, &nrChannels, 0);
 		if (textureData) {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
 			glGenerateMipmap(GL_TEXTURE_2D);
@@ -166,7 +180,7 @@ int WINAPI WinMain(
 		/**
 		Render Vertex array and texture
 		*/
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, videoFrame);
 		shaderObj.use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
