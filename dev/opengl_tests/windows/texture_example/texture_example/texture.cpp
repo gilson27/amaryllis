@@ -10,8 +10,8 @@ void process_input(GLFWwindow *window);
 /**
 Settings
 */
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 200;
+const unsigned int SCR_HEIGHT = 150;
 
 /**
 Main function
@@ -65,10 +65,10 @@ int WINAPI WinMain(
 	*/
 	float vertices[] = {
 		// positions          // colors           // texture coords
-		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-		-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left 
+		-1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+		-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+		1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+		1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left 
 	};
 	unsigned int indices[] = {
 		0, 1, 3, // first triangle
@@ -132,16 +132,10 @@ int WINAPI WinMain(
 	Load image generate texture and mipmaps
 	*/
 	int width, height, nrChannels;
-	unsigned char* textureData = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
-	if (textureData) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		cout << "Error:: Failed to load image.." << endl;
-	}
-	stbi_image_free(textureData);
-
+	char *baseFileName = "frames/";
+	char fileName[100];
+	int frameNum = 1;
+	int maxFrames = 300;
 	/**
 	Render Loop
 	*/
@@ -157,6 +151,17 @@ int WINAPI WinMain(
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		sprintf_s(fileName, "%s%d.jpg", baseFileName, frameNum);
+		unsigned char* textureData = stbi_load(fileName, &width, &height, &nrChannels, 0);
+		if (textureData) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else {
+			cout << "Error:: Failed to load image.." << endl;
+		}
+		stbi_image_free(textureData);
+
 
 		/**
 		Render Vertex array and texture
@@ -168,6 +173,10 @@ int WINAPI WinMain(
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		if (frameNum <= maxFrames) {
+			frameNum++;
+		}
+		Sleep(30);
 	}
 
 	glDeleteVertexArrays(1, &VAO);
