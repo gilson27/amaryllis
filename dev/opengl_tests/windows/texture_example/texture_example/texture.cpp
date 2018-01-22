@@ -10,8 +10,8 @@ void process_input(GLFWwindow *window);
 /**
 Settings
 */
-const unsigned int SCR_WIDTH = 200;
-const unsigned int SCR_HEIGHT = 150;
+const unsigned int SCR_WIDTH = 400;
+const unsigned int SCR_HEIGHT = 300;
 
 /**
 Main function
@@ -115,31 +115,10 @@ int WINAPI WinMain(
 	Load and Create Texture for video Frame
 	*/
 	unsigned int videoFrame, overlayImage;
-	glGenTextures(1, &videoFrame);
-
-	glBindTexture(GL_TEXTURE_2D, videoFrame); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-
-	/**
-	Set texture attributes or parameters
-	*/
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-	/**
-	Load and create texture for overlayImage
-	*/
-	glGenTextures(1, &overlayImage);
-	glBindTexture(GL_TEXTURE_2D, overlayImage);
 
-	/**
-	Set texture attributes and parameters
-	*/
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 
 	/**
 	Load image generate texture and mipmaps
@@ -165,22 +144,74 @@ int WINAPI WinMain(
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		glGenTextures(1, &videoFrame);
+
+		glBindTexture(GL_TEXTURE_2D, videoFrame); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+		/**
+		Set texture attributes or parameters
+		*/
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		sprintf_s(frameFileName, "%s%d.jpg", baseFileName, frameNum);
-		unsigned char* textureData = stbi_load(frameFileName, &width, &height, &nrChannels, 0);
-		if (textureData) {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+		unsigned char* textureDataFrame = stbi_load(frameFileName, &width, &height, &nrChannels, 0);
+		if (textureDataFrame) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureDataFrame);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		else {
 			cout << "Error:: Failed to load image.." << endl;
 		}
-		stbi_image_free(textureData);
+		stbi_image_free(textureDataFrame);
 
+		/**
+		Render video texture
+		*/
+		glTexCoordP2ui(0.0, 0.0);
+		glTexCoordP2ui(0.0, 0.5);
+		glTexCoordP2ui(0.5, 0.5);
+		glTexCoordP2ui(0.5, 0.0);
+		glBindTexture(GL_TEXTURE_2D, videoFrame);
 
+		glGenTextures(1, &overlayImage);
+
+		glBindTexture(GL_TEXTURE_2D, overlayImage); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+
+		/**
+		Set texture attributes or parameters
+		*/
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		unsigned char* textureDataOverlay = stbi_load(overlayFileName, &width, &height, &nrChannels, 0);
+		if (textureDataOverlay) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureDataOverlay);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else {
+			cout << "Error:: Failed to load image.." << endl;
+		}
+		stbi_image_free(textureDataOverlay);
+		//glTexCoordP2ui();
 		/**
 		Render Vertex array and texture
 		*/
-		glBindTexture(GL_TEXTURE_2D, videoFrame);
+
+		glTexCoordP2ui(0.5, 0.5);
+		glTexCoordP2ui(0.5, 1.0);
+		glTexCoordP2ui(1.0, 1.0);
+		glTexCoordP2ui(1.0, 0.5);
+		glBindTexture(GL_TEXTURE_2D, overlayImage);
+
+
+
 		shaderObj.use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
