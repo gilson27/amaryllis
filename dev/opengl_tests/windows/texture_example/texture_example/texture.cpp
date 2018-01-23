@@ -171,10 +171,10 @@ int WINAPI WinMain(
 		/**
 		Render video texture
 		*/
-		glTexCoordP2ui(0.0, 0.0);
-		glTexCoordP2ui(0.0, 0.5);
-		glTexCoordP2ui(0.5, 0.5);
-		glTexCoordP2ui(0.5, 0.0);
+		//glTexCoordP2ui(0.0, 0.0);
+		//glTexCoordP2ui(0.0, 0.5);
+		//glTexCoordP2ui(0.5, 0.5);
+		//glTexCoordP2ui(0.5, 0.0);
 
 		glGenTextures(1, &overlayImage);
 
@@ -207,13 +207,13 @@ int WINAPI WinMain(
 		// glTexCoordP2ui(0.5, 1.0);
 		// glTexCoordP2ui(1.0, 1.0);
 		// glTexCoordP2ui(1.0, 0.5);
-		shaderObj.use();
-		shaderObj.setInt("videoFrame", 0);
-		shaderObj.setInt("overlayImage", 1);
-
-		glActivateTexture(GL_TEXTURE0);
+		//shaderObj.use();
+		//shaderObj.setInt("videoFrame", 0);
+		//shaderObj.setInt("overlayImage", 1);
+		
+		//glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, videoFrame);
-		glActivateTexture(GL_TEXTURE1);
+		//glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, overlayImage);
 
 
